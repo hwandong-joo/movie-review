@@ -17,6 +17,9 @@ public class MemberRepositoryTests {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private ReviewRepository reviewRepository;
+
     @Test
     public void insertMembers() {
         IntStream.rangeClosed(1, 100).forEach(i -> {
@@ -27,5 +30,16 @@ public class MemberRepositoryTests {
                     .build();
             memberRepository.save(member);
         });
+    }
+
+    @Commit
+    @Transactional
+    @Test
+    public void testDeleteMember() {
+        Long mid = 1L;
+        Member member = Member.builder().mid(mid).build();
+
+        reviewRepository.deleteByMember(member);
+        memberRepository.deleteById(mid);
     }
 }
