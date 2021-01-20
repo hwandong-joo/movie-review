@@ -104,7 +104,7 @@
                     $(".uploadResult li").each(function (i,obj){
                         var target = $(obj);
 
-                        str += "<input type='hidden' name='imageDTOList[" + i + "].imagName' value='" + target.data('name')+"'>";
+                        str += "<input type='hidden' name='imageDTOList[" + i + "].imgName' value='" + target.data('name')+"'>";
                         str += "<input type='hidden' name='imageDTOList[" + i + "].path' value='" + target.data('path')+"'>";
                         str += "<input type='hidden' name='imageDTOList[" + i + "].uuid' value='" + target.data('uuid')+"'>";
                     });
