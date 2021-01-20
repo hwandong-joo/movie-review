@@ -25,7 +25,7 @@
             <tbody>
             <tr th:each="dto : ${result.dtoList}">
                 <th scope="row">
-                    <a th:href="@{/movie/read(gno = ${dto.mno}, page= ${result.page})}">[[${dto.mno}]]</a>
+                    <a th:href="@{/movie/read(mno = ${dto.mno}, page= ${result.page})}">[[${dto.mno}]]</a>
                 </th>
                 <td><img th:if="${dto.imageDTOList.size()>0 && dto.imageDTOList[0].path != null}"
                          th:src="|/display?fileName=${dto.imageDTOList[0].getThumbnailURL()}|" >[[${dto.title}]]

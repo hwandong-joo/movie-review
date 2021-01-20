@@ -2,38 +2,34 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
     <th:block th:fragment="content">
-        <h1 class="mt-4">GuestBook Read Page</h1>
-        <div class="form-group">
-            <label>Gno</label>
-            <input type="text" class="form-control" name="gno" th:value="${dto.gno}" readonly>
-        </div>
+        <h1 class="mt-4">Movie Read Page</h1>
         <div class="form-group">
             <label>Title</label>
             <input type="text" class="form-control" name="title" th:value="${dto.title}" readonly>
         </div>
         <div class="form-group">
-            <label>Content</label>
-            <textarea class="form-control" rows="5" name="content" readonly>[[${dto.content}]]</textarea>
+            <label>Review Count</label>
+            <textarea class="form-control" rows="5" name="reviewCnt" readonly>[[${dto.reviewCnt}]]</textarea>
         </div>
         <div class="form-group">
-            <label>Writer</label>
-            <input type="text" class="form-control" name="writer" th:value="${dto.writer}" readonly>
+            <label>Avg</label>
+            <input type="text" class="form-control" name="avg" th:value="${dto.avg}" readonly>
         </div>
-        <div class="form-group">
-            <label>RegDate</label>
-            <input type="text" class="form-control" name="regDate"
-                   th:value="${#temporals.format(dto.regDate, 'yyyy/MM/dd HH:mm:ss')}" readonly>
+        <div class="uploadResult">
+            <ul>
+                <li th:each="movieImage: ${dto.imageDTOList}">
+                    <img th:if="${movieImage.path != null}"
+                         th:src="|/display?fileName=${movieImage.getThumbnailURL()}|">
+                </li>
+            </ul>
         </div>
-        <div class="form-group">
-            <label>ModDate</label>
-            <input type="text" class="form-control" name="writer"
-                   th:value="${#temporals.format(dto.modDate, 'yyyy/MM/dd HH:mm:ss')}" readonly>
-        </div>
-        <a th:href="@{/guestbook/modify(gno = ${dto.gno}, page=${requestDTO.page},type=${requestDTO.type}, keyword=${requestDTO.keyword})}">
-            <button type="button" class="btn btn-primary">Modify</button>
-        </a>
-        <a th:href="@{/guestbook/list(page=${requestDTO.page},type=${requestDTO.type}, keyword=${requestDTO.keyword})}">
-            <button type="button" class="btn btn-info">List</button>
-        </a>
+        <button type="button" class="btn btn-primary">
+            Review Count <span class="badge badge-light">[[${dto.reviewCnt}]]</span>
+        </button>
+        <script>
+            $(document).ready(function (e) {
+
+            });
+        </script>
     </th:block>
 </th:block>
