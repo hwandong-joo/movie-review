@@ -12,7 +12,7 @@ public class MovieServiceTests {
 
     @Test
     public void testRemove(){
-        Long mno = 107L;
+        Long mno = 128L;
         movieService.removeWithReplies(mno);
     }
 }
