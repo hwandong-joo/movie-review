@@ -3,6 +3,15 @@
 <th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
     <th:block th:fragment="content">
         <h1 class="mt-4">Movie Read Page</h1>
+        <button type="button" class="btn btn-primary movieModifyBtn">
+            Movie Modify
+        </button>
+        <button type="button" class="btn btn-secondary movieListBtn">
+            Movie List
+        </button>
+        <button type="button" class="btn btn-danger movieRemoveBtn">
+            Movie Remove
+        </button>
         <div class="form-group">
             <label>Title</label>
             <input type="text" class="form-control" name="title" th:value="${dto.title}" readonly>
@@ -29,6 +38,8 @@
         <button type="button" class="btn btn-info addReviewBtn">
             Review Register
         </button>
+
+
         <div class="list-group reviewList">
 
         </div>
@@ -168,7 +179,22 @@
                     console.log(file);
                     $('.imageModal .modal-body').html("<img style='width:100%' src='/display?fileName=" + file + "&size=1' >");
                     $(".imageModal").modal("show");
-                })
+                });
+
+                $(".movieRemoveBtn").on("click", function () {
+                    console.log("delete movie");
+
+                    // $.ajax({
+                    //     url: "/removeFile",
+                    //     data: {fileName: targetFile},
+                    //     dataType: 'text',
+                    //     type: "POST",
+                    //     success: function (result) {
+                    //         alert(result);
+                    //         targetLi.remove();
+                    //     },
+                    // });
+                });
             });
 
         </script>
