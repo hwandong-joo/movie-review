@@ -109,10 +109,8 @@ public class UploadController {
             srcFileName = URLDecoder.decode(fileName, "UTF-8");
             File file = new File(uploadPath + File.separator + srcFileName);
             boolean result = file.delete();
-
             File thumbnail = new File(file.getParent(), "s_" + file.getName());
             result = thumbnail.delete();
-
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
