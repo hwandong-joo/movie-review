@@ -4,19 +4,19 @@
     <th:block th:fragment="content">
         <h1 class="mt-4">Movie Modify Page</h1>
         <form action="/movie/modify" method="post">
-<!--            <input type="hidden" name="page" th:value="${requestDTO.page}">-->
-<!--            <input type="hidden" name="type" th:value="${requestDTO.type}">-->
-<!--            <input type="hidden" name="keyword" th:value="${requestDTO.keyword}">-->
+            <!--            <input type="hidden" name="page" th:value="${requestDTO.page}">-->
+            <!--            <input type="hidden" name="type" th:value="${requestDTO.type}">-->
+            <!--            <input type="hidden" name="keyword" th:value="${requestDTO.keyword}">-->
             <div class="form-group">
                 <label>Mno</label>
                 <input type="text" class="form-control" name="mno" th:value="${dto.mno}" readonly>
             </div>
             <div class="form-group">
                 <label>Title</label>
-                <input type="text" class="form-control" name="title" placeholder="Enter Title">
+                <input type="text" class="form-control" name="title" th:value="${dto.title}">
             </div>
             <div class="form-group fileForm">
-                <label>Image Files</label>
+                <label>Image Files(이미지 변경시 기존 이미지는 다 삭제됩니다!)</label>
                 <div class="custom-file">
                     <input type="file" class="custom-file-input files" id="fileInput" multiple>
                     <label class="custom-file-label" data-browse="Browse"></label>
@@ -25,6 +25,20 @@
             <div class="box">
             </div>
         </form>
+        <div class="previousImgs">
+            <ul>
+                <li th:each="movieImage: ${dto.imageDTOList}" th:data-file="${movieImage.getThumbnailURL()}">
+                    <div>
+                        <img th:if="${movieImage.path != null}"
+                             th:src="|/display?fileName=${movieImage.getThumbnailURL()}|">
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="uploadResult">
+            <ul>
+            </ul>
+        </div>
         <button type="button" class="btn btn-primary modifyBtn">Modify</button>
         <button type="button" class="btn btn-info listBtn">List</button>
         <button type="button" class="btn btn-danger removeBtn">Remove</button>
@@ -60,7 +74,136 @@
                 console.log(actionForm.html());
                 actionForm.submit();
             });
-
         </script>
+        <script>
+            $(document).ready(function (e) {
+                var regex = new RegExp("(.*?)\.(exe|sh|zip|alz|tiff)$");
+                var maxSize = 10485760;
+
+                function checkExtension(fileName, fileSize) {
+                    if (fileSize >= maxSize) {
+                        alert("파일 사이즈 초과");
+                        return false;
+                    }
+                    if (regex.test(fileName)) {
+                        alert("해당 종류의 파일은 업로드할 수 없습니다.")
+                        return false;
+                    }
+                    return true;
+                }
+
+                $(".custom-file-input").on("change", function () {
+                    var fileName = $(this).val().split("\\").pop();
+                    $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+
+                    var formData = new FormData();
+                    var inputFile = $(this);
+                    var files = inputFile[0].files;
+                    var appended = false;
+                    for (var i = 0; i < files.length; i++) {
+                        if (!checkExtension(files[i].name, files[i].size)) {
+                            return false;
+                        }
+                        console.log(files[i]);
+                        formData.append("uploadFiles", files[i]);
+                        appended = true;
+                    }
+
+                    if (!appended) {
+                        return;
+                    }
+                    for (var value of formData.values()) {
+                        console.log(value);
+                    }
+
+                    $.ajax({
+                        url: '/uploadAjax',
+                        processData: false,
+                        contentType: false,
+                        data: formData,
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (result) {
+                            console.log(result);
+                            showResult(result);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.log(textStatus);
+                        }
+                    });
+                });
+                $(".uploadResult").on("click", "li button", function (e) {
+                    console.log("delete file");
+                    var targetFile = $(this).data("file");
+                    var targetFileInum = $(this).data("inum");
+                    var targetLi = $(this).closest("li");
+                    console.log(targetFileInum);
+                    $.ajax({
+                        url: "/removeFile",
+                        data: {fileName: targetFile},
+                        dataType: 'text',
+                        type: "POST",
+                        success: function (result) {
+                            alert(result);
+                            targetLi.remove();
+                        },
+                    });
+                });
+                $(".btn-primary").on("click", function (e) {
+                    e.preventDefault();
+                    var str = "";
+                    $(".uploadResult li").each(function (i, obj) {
+                        var target = $(obj);
+                        str += "<input type='hidden' name='imageDTOList[" + i + "].imgName' value='" + target.data('name') + "'>";
+                        str += "<input type='hidden' name='imageDTOList[" + i + "].path' value='" + target.data('path') + "'>";
+                        str += "<input type='hidden' name='imageDTOList[" + i + "].uuid' value='" + target.data('uuid') + "'>";
+                    });
+
+                    $(".box").html(str);
+                    $("form").submit();
+                })
+            });
+
+            function showResult(uploadResultArr) {
+                var uploadUL = $(".uploadResult ul");
+                var str = "";
+                $(uploadResultArr).each(function (i, obj) {
+                    str += "<li data-name='" + obj.fileName + "' data-path='" + obj.folderPath + "' data-uuid='" + obj.uuid + "'>";
+                    str += " <div>";
+                    str += "<button type='button' data-file=\'" + obj.imageURL + "\' ";
+                    str += "class='btn-warning btn-sm'>X</button><br>";
+                    str += "<img src='/display?fileName=" + obj.thumbnailURL + "'>";
+                    str += "</div>";
+                    str += "</li>";
+                });
+                uploadUL.append(str);
+            }
+        </script>
+        <style>
+            .uploadResult {
+                width: 100%;
+                background-color: gray;
+                margin-top: 10px;
+            }
+
+            .uploadResult ul {
+                display: flex;
+                flex-flow: row;
+                justify-content: center;
+                align-items: center;
+                vertical-align: top;
+                overflow: auto;
+            }
+
+            .uploadResult ul li {
+                list-style: none;
+                padding: 10px;
+                margin-left: 2em;
+            }
+
+            .uploadResult ul li img {
+                width: 100px;
+            }
+        </style>
     </th:block>
 </th:block>
