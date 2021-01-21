@@ -2,36 +2,27 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
     <th:block th:fragment="content">
-        <h1 class="mt-4">GuestBook Modify Page</h1>
-        <form action="/guestbook/modify" method="post">
-            <input type="hidden" name="page" th:value="${requestDTO.page}">
-            <input type="hidden" name="type" th:value="${requestDTO.type}">
-            <input type="hidden" name="keyword" th:value="${requestDTO.keyword}">
+        <h1 class="mt-4">Movie Modify Page</h1>
+        <form action="/movie/modify" method="post">
+<!--            <input type="hidden" name="page" th:value="${requestDTO.page}">-->
+<!--            <input type="hidden" name="type" th:value="${requestDTO.type}">-->
+<!--            <input type="hidden" name="keyword" th:value="${requestDTO.keyword}">-->
             <div class="form-group">
-                <label>Gno</label>
-                <input type="text" class="form-control" name="gno" th:value="${dto.gno}" readonly>
+                <label>Mno</label>
+                <input type="text" class="form-control" name="mno" th:value="${dto.mno}" readonly>
             </div>
             <div class="form-group">
                 <label>Title</label>
-                <input type="text" class="form-control" name="title" th:value="${dto.title}">
+                <input type="text" class="form-control" name="title" placeholder="Enter Title">
             </div>
-            <div class="form-group">
-                <label>Content</label>
-                <textarea class="form-control" rows="5" name="content">[[${dto.content}]]</textarea>
+            <div class="form-group fileForm">
+                <label>Image Files</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input files" id="fileInput" multiple>
+                    <label class="custom-file-label" data-browse="Browse"></label>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Writer</label>
-                <input type="text" class="form-control" name="writer" th:value="${dto.writer}" readonly>
-            </div>
-            <div class="form-group">
-                <label>RegDate</label>
-                <input type="text" class="form-control"
-                       th:value="${#temporals.format(dto.regDate, 'yyyy/MM/dd HH:mm:ss')}" readonly>
-            </div>
-            <div class="form-group">
-                <label>ModDate</label>
-                <input type="text" class="form-control"
-                       th:value="${#temporals.format(dto.modDate, 'yyyy/MM/dd HH:mm:ss')}" readonly>
+            <div class="box">
             </div>
         </form>
         <button type="button" class="btn btn-primary modifyBtn">Modify</button>
@@ -41,7 +32,7 @@
             var actionForm = $("form");
             $(".removeBtn").click(function () {
                 actionForm
-                    .attr("action", "/guestbook/remove")
+                    .attr("action", "/movie/remove")
                     .attr("method", "post");
                 actionForm.submit();
             });
@@ -50,7 +41,7 @@
                     return;
                 }
                 actionForm
-                    .attr("action", "/guestbook/modify")
+                    .attr("action", "/movie/modify")
                     .attr("method", "post")
                     .submit();
                 // actionForm.submit();
@@ -64,7 +55,7 @@
                 actionForm.append(type);
                 actionForm.append(keyword);
                 actionForm
-                    .attr("action", "/guestbook/list")
+                    .attr("action", "/movie/list")
                     .attr("method", "get");
                 console.log(actionForm.html());
                 actionForm.submit();

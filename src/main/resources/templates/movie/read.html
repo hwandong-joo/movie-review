@@ -3,15 +3,16 @@
 <th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
     <th:block th:fragment="content">
         <h1 class="mt-4">Movie Read Page</h1>
-        <button type="button" class="btn btn-primary movieModifyBtn">
-            Movie Modify
-        </button>
-        <button type="button" class="btn btn-secondary movieListBtn">
-            Movie List
-        </button>
-        <button type="button" class="btn btn-danger movieRemoveBtn">
-            Movie Remove
-        </button>
+        <a th:href="@{/movie/modify(mno = ${dto.mno})}">
+            <button type="button" class="btn btn-primary movieModifyBtn">
+                Movie Modify
+            </button>
+        </a>
+        <a th:href="@{/movie/list}">
+            <button type="button" class="btn btn-secondary movieListBtn">
+                Movie List
+            </button>
+        </a>
         <div class="form-group">
             <label>Title</label>
             <input type="text" class="form-control" name="title" th:value="${dto.title}" readonly>
@@ -179,21 +180,6 @@
                     console.log(file);
                     $('.imageModal .modal-body').html("<img style='width:100%' src='/display?fileName=" + file + "&size=1' >");
                     $(".imageModal").modal("show");
-                });
-
-                $(".movieRemoveBtn").on("click", function () {
-                    console.log("delete movie");
-
-                    // $.ajax({
-                    //     url: "/removeFile",
-                    //     data: {fileName: targetFile},
-                    //     dataType: 'text',
-                    //     type: "POST",
-                    //     success: function (result) {
-                    //         alert(result);
-                    //         targetLi.remove();
-                    //     },
-                    // });
                 });
             });
 
