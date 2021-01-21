@@ -69,5 +69,5 @@ public interface MovieService {
     MovieDTO getMovie(Long mno);
 
     void removeWithReplies(Long mno);
-
+    void modify(MovieDTO movieDTO);
 }

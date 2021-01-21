@@ -89,11 +89,11 @@ public class MovieServiceImpl implements MovieService {
     public void removeWithReplies(Long mno) {
         MovieDTO movieDTO = getMovie(mno);
         //실제 이미지 삭제
-        movieDTO.getImageDTOList().forEach(arr->{
-            String srcFileName = arr.getPath() + File.separator + arr.getUuid()+"_"+arr.getImgName();
-            File file = new File(uploadPath+File.separator+srcFileName);
+        movieDTO.getImageDTOList().forEach(arr -> {
+            String srcFileName = arr.getPath() + File.separator + arr.getUuid() + "_" + arr.getImgName();
+            File file = new File(uploadPath + File.separator + srcFileName);
             boolean result = file.delete();
-            File thumbnail = new File(file.getParent(), "s_"+file.getName());
+            File thumbnail = new File(file.getParent(), "s_" + file.getName());
             result = thumbnail.delete();
         });
         //리뷰 DB 삭제
@@ -103,4 +103,22 @@ public class MovieServiceImpl implements MovieService {
         //영화 DB 삭제
         movieRepository.deleteById(mno);
     }
+
+    @Transactional
+    @Override
+    public void modify(MovieDTO movieDTO) {
+        Map<String, Object> entityMap = dtoToEntity(movieDTO);
+        Movie movie = (Movie) entityMap.get("movie");
+        List<MovieImage> movieImageList = (List<MovieImage>) entityMap.get("imgList");
+
+        if(movieImageList != null) {
+            movieImageRepository.deleteByMovie(movie.getMno());
+            movieImageList.forEach(movieImage -> {
+                movieImageRepository.save(movieImage);
+            });
+        }
+        movieRepository.save(movie);
+
+    }
+
 }
